@@ -1,8 +1,10 @@
 package com.flipkart.app;
 
 import com.flipkart.bean.GymOwner;
+import com.flipkart.bean.Role;
 import com.flipkart.bean.User;
 import com.flipkart.bean.Gym;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -31,7 +33,7 @@ public class GymFlipFitGymOwnerMenu {
         GymOwner gymOwner = new GymOwner(generateUserID(), username, name, aadharCard, gstIN, panCard, address, pinCode);
         gymOwners.add(gymOwner);
 
-        User user = new User(username, password, "GYM Owner");
+        User user = new User(username, password, Role.GYMOWNER);
         FlipFitApplication.users.put(username, user);
 
         System.out.println("GYM Owner registration successful.");
@@ -41,27 +43,27 @@ public class GymFlipFitGymOwnerMenu {
         int menuOption = 1;
         do {
             System.out.println("\n\n ------ Gym Owner Menu Options ------ ");
-            System.out.println("Press 1. Add a new gym Centre");
-            System.out.println("Press 2. View Registered Gyms ");
-            System.out.println("Press 3. Register Time Slots ");
-            System.out.println("Press 4. View Profile");
-            System.out.println("Press 5. Quit");
+            System.out.println("1. Add a new gym Centre");
+            System.out.println("2. View Registered Gyms ");
+            System.out.println("3. Register Time Slots ");
+            System.out.println("4. View Profile");
+            System.out.println("5. Quit");
             System.out.print("Enter your choice: ");
             menuOption = in.nextInt();
             in.nextLine();
 
             switch (menuOption) {
                 case 1:
-                    //addNewGym(user, in);
+                    addNewGym(user, in);
                     break;
                 case 2:
-                    //viewRegisteredGyms(user);
+                    viewRegisteredGyms();
                     break;
                 case 3:
-                    //registerTimeSlots(user, in);
+                    // registerTimeSlots(user, in);
                     break;
                 case 4:
-                    //viewProfile(user);
+                    // viewProfile(user);
                     break;
                 case 5:
                     System.out.println("You have exited the gym owner menu.");
@@ -71,6 +73,29 @@ public class GymFlipFitGymOwnerMenu {
                     break;
             }
         } while (menuOption != 5);
+    }
+
+    private void addNewGym(User user, Scanner scanner) {
+        Gym gym = new Gym();
+        System.out.print("Enter gym name: ");
+        gym.setGymName(scanner.nextLine());
+        System.out.print("Enter location: ");
+        gym.setLocation(scanner.nextLine());
+        System.out.print("Enter number of seats: ");
+        gym.setNoOfSeats(scanner.nextInt());
+        scanner.nextLine();
+        gym.setGymOwnerID(user.getUsername());
+        Gym.addGym(gym);
+        System.out.println("New gym center added successfully.");
+    }
+
+    private void viewRegisteredGyms() {
+        List<Gym> gymList = Gym.getGymList();
+        System.out.println("GymID\tName\tLocation\tNo.of available seats");
+        System.out.println("-----------------------------------------------------------");
+        for (Gym gym : gymList) {
+            System.out.println(gym.getGymID() + "\t" + gym.getGymName() + "\t" + gym.getLocation() + "\t\t" + gym.getNoOfSeats());
+        }
     }
 
     private int generateUserID() {
